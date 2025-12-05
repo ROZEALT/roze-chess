@@ -79,6 +79,7 @@ const Index = () => {
                   playerColor={playerColor}
                   onPieceDrop={handlePieceDrop}
                   isGameOver={gameState.isGameOver}
+                  turn={gameState.turn}
                 />
               </div>
             </div>
