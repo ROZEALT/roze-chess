@@ -14,7 +14,150 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      game_history: {
+        Row: {
+          id: string
+          moves_count: number | null
+          opening_name: string | null
+          opponent_name: string | null
+          opponent_rating: number | null
+          opponent_type: string
+          pgn: string | null
+          played_at: string | null
+          rating_change: number | null
+          result: string
+          time_control: string | null
+          user_color: string | null
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          moves_count?: number | null
+          opening_name?: string | null
+          opponent_name?: string | null
+          opponent_rating?: number | null
+          opponent_type?: string
+          pgn?: string | null
+          played_at?: string | null
+          rating_change?: number | null
+          result: string
+          time_control?: string | null
+          user_color?: string | null
+          user_id: string
+        }
+        Update: {
+          id?: string
+          moves_count?: number | null
+          opening_name?: string | null
+          opponent_name?: string | null
+          opponent_rating?: number | null
+          opponent_type?: string
+          pgn?: string | null
+          played_at?: string | null
+          rating_change?: number | null
+          result?: string
+          time_control?: string | null
+          user_color?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          games_drawn: number | null
+          games_lost: number | null
+          games_played: number | null
+          games_won: number | null
+          id: string
+          is_premium: boolean | null
+          rating_blitz: number | null
+          rating_bullet: number | null
+          rating_daily: number | null
+          rating_rapid: number | null
+          updated_at: string | null
+          user_id: string
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          games_drawn?: number | null
+          games_lost?: number | null
+          games_played?: number | null
+          games_won?: number | null
+          id?: string
+          is_premium?: boolean | null
+          rating_blitz?: number | null
+          rating_bullet?: number | null
+          rating_daily?: number | null
+          rating_rapid?: number | null
+          updated_at?: string | null
+          user_id: string
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          games_drawn?: number | null
+          games_lost?: number | null
+          games_played?: number | null
+          games_won?: number | null
+          id?: string
+          is_premium?: boolean | null
+          rating_blitz?: number | null
+          rating_bullet?: number | null
+          rating_daily?: number | null
+          rating_rapid?: number | null
+          updated_at?: string | null
+          user_id?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
+      user_settings: {
+        Row: {
+          board_theme: string | null
+          created_at: string | null
+          highlight_moves: boolean | null
+          id: string
+          move_confirmation: boolean | null
+          piece_set: string | null
+          premove_enabled: boolean | null
+          show_coordinates: boolean | null
+          sounds_enabled: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          board_theme?: string | null
+          created_at?: string | null
+          highlight_moves?: boolean | null
+          id?: string
+          move_confirmation?: boolean | null
+          piece_set?: string | null
+          premove_enabled?: boolean | null
+          show_coordinates?: boolean | null
+          sounds_enabled?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          board_theme?: string | null
+          created_at?: string | null
+          highlight_moves?: boolean | null
+          id?: string
+          move_confirmation?: boolean | null
+          piece_set?: string | null
+          premove_enabled?: boolean | null
+          show_coordinates?: boolean | null
+          sounds_enabled?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
