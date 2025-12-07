@@ -8,7 +8,6 @@ import { Layout } from "@/components/Layout";
 import Home from "./pages/Home";
 import Play from "./pages/Play";
 import Learn from "./pages/Learn";
-import Watch from "./pages/Watch";
 import Connect from "./pages/Connect";
 import Settings from "./pages/Settings";
 import Auth from "./pages/Auth";
@@ -28,7 +27,6 @@ const App = () => (
             <Route path="/" element={<Layout><Home /></Layout>} />
             <Route path="/play" element={<Layout><Play /></Layout>} />
             <Route path="/learn" element={<Layout><Learn /></Layout>} />
-            <Route path="/watch" element={<Layout><Watch /></Layout>} />
             <Route path="/connect" element={<Layout><Connect /></Layout>} />
             <Route path="/settings" element={<Layout><Settings /></Layout>} />
             <Route path="*" element={<NotFound />} />
