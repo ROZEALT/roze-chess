@@ -1,5 +1,5 @@
-import { Puzzle, BookOpen, Brain, Target, Trophy, Lightbulb } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { BookOpen, Brain, Target, Trophy } from 'lucide-react';
+import DailyPuzzle from '@/components/DailyPuzzle';
 
 const lessons = [
   { title: 'Chess Basics', description: 'Learn how pieces move', icon: BookOpen, level: 'Beginner' },
@@ -16,22 +16,8 @@ const Learn = () => {
         <p className="text-muted-foreground mb-8">Improve your game with lessons, puzzles, and training tools.</p>
 
         {/* Daily Puzzle */}
-        <div className="chess-card p-6 mb-8">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-14 h-14 rounded-xl bg-yellow-500/20 flex items-center justify-center">
-              <Puzzle className="w-8 h-8 text-yellow-500" />
-            </div>
-            <div>
-              <h2 className="font-heading font-semibold text-xl text-foreground">Daily Puzzle</h2>
-              <p className="text-sm text-muted-foreground">Solve today's tactical challenge</p>
-            </div>
-          </div>
-          <div className="bg-secondary rounded-lg p-8 text-center mb-4">
-            <Lightbulb className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-            <p className="text-muted-foreground">Puzzle feature coming soon!</p>
-            <p className="text-sm text-muted-foreground mt-1">Practice tactics with unlimited puzzles</p>
-          </div>
-          <Button variant="glow" className="w-full">Start Solving</Button>
+        <div className="mb-8">
+          <DailyPuzzle />
         </div>
 
         {/* Lessons Grid */}
