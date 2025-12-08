@@ -7,6 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { Layout } from "@/components/Layout";
 import Home from "./pages/Home";
 import Play from "./pages/Play";
+import Online from "./pages/Online";
 import Learn from "./pages/Learn";
 import Connect from "./pages/Connect";
 import Settings from "./pages/Settings";
@@ -26,6 +27,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/" element={<Layout><Home /></Layout>} />
             <Route path="/play" element={<Layout><Play /></Layout>} />
+            <Route path="/online" element={<Layout><Online /></Layout>} />
             <Route path="/learn" element={<Layout><Learn /></Layout>} />
             <Route path="/connect" element={<Layout><Connect /></Layout>} />
             <Route path="/settings" element={<Layout><Settings /></Layout>} />
