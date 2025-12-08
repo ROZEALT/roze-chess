@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Crown, Home, Play, GraduationCap, Users, Settings, LogOut, User } from 'lucide-react';
+import { Crown, Home, Play, Globe, GraduationCap, Users, Settings, LogOut, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import {
@@ -14,6 +14,7 @@ import {
 const navItems = [
   { path: '/', label: 'Home', icon: Home },
   { path: '/play', label: 'Play', icon: Play },
+  { path: '/online', label: 'Online', icon: Globe },
   { path: '/learn', label: 'Learn', icon: GraduationCap },
   { path: '/connect', label: 'Connect', icon: Users },
 ];

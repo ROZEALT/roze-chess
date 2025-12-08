@@ -62,6 +62,93 @@ export type Database = {
         }
         Relationships: []
       }
+      matchmaking_queue: {
+        Row: {
+          id: string
+          joined_at: string
+          rating: number
+          time_control: Database["public"]["Enums"]["time_control"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string
+          rating?: number
+          time_control: Database["public"]["Enums"]["time_control"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string
+          rating?: number
+          time_control?: Database["public"]["Enums"]["time_control"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      online_games: {
+        Row: {
+          black_player_id: string | null
+          black_time_remaining: number
+          created_at: string
+          current_turn: string | null
+          fen: string
+          id: string
+          is_private: boolean | null
+          last_move_at: string | null
+          moves: Json | null
+          pgn: string | null
+          result: string | null
+          room_code: string | null
+          status: Database["public"]["Enums"]["game_status"]
+          time_control: Database["public"]["Enums"]["time_control"]
+          updated_at: string
+          white_player_id: string | null
+          white_time_remaining: number
+          winner_id: string | null
+        }
+        Insert: {
+          black_player_id?: string | null
+          black_time_remaining?: number
+          created_at?: string
+          current_turn?: string | null
+          fen?: string
+          id?: string
+          is_private?: boolean | null
+          last_move_at?: string | null
+          moves?: Json | null
+          pgn?: string | null
+          result?: string | null
+          room_code?: string | null
+          status?: Database["public"]["Enums"]["game_status"]
+          time_control?: Database["public"]["Enums"]["time_control"]
+          updated_at?: string
+          white_player_id?: string | null
+          white_time_remaining?: number
+          winner_id?: string | null
+        }
+        Update: {
+          black_player_id?: string | null
+          black_time_remaining?: number
+          created_at?: string
+          current_turn?: string | null
+          fen?: string
+          id?: string
+          is_private?: boolean | null
+          last_move_at?: string | null
+          moves?: Json | null
+          pgn?: string | null
+          result?: string | null
+          room_code?: string | null
+          status?: Database["public"]["Enums"]["game_status"]
+          time_control?: Database["public"]["Enums"]["time_control"]
+          updated_at?: string
+          white_player_id?: string | null
+          white_time_remaining?: number
+          winner_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -166,7 +253,14 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      game_status: "waiting" | "active" | "completed" | "abandoned"
+      time_control:
+        | "bullet_1"
+        | "bullet_2"
+        | "blitz_3"
+        | "blitz_5"
+        | "rapid_10"
+        | "rapid_15"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -293,6 +387,16 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      game_status: ["waiting", "active", "completed", "abandoned"],
+      time_control: [
+        "bullet_1",
+        "bullet_2",
+        "blitz_3",
+        "blitz_5",
+        "rapid_10",
+        "rapid_15",
+      ],
+    },
   },
 } as const
