@@ -36,7 +36,7 @@ const Auth = () => {
         }
         const { error } = await signUp(email, password, username);
         if (error) throw error;
-        toast({ title: 'Account created!', description: 'Welcome to ChessMaster.' });
+        toast({ title: 'Account created!', description: 'Welcome to Vault Chess.' });
       }
       navigate('/');
     } catch (error: any) {
@@ -59,7 +59,7 @@ const Auth = () => {
               <Crown className="w-7 h-7 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="font-heading font-bold text-2xl text-foreground">ChessMaster</h1>
+              <h1 className="font-heading font-bold text-2xl text-foreground">Vault Chess</h1>
               <p className="text-xs text-muted-foreground">Play • Learn • Compete</p>
             </div>
           </div>

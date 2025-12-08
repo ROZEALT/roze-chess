@@ -32,7 +32,7 @@ export const Layout = ({ children }: { children: ReactNode }) => {
               <Crown className="w-6 h-6 text-primary-foreground" />
             </div>
             <div className="hidden sm:block">
-              <h1 className="font-heading font-bold text-xl text-foreground">ChessMaster</h1>
+              <h1 className="font-heading font-bold text-xl text-foreground">Vault Chess</h1>
               <p className="text-xs text-muted-foreground">Play • Learn • Compete</p>
             </div>
           </Link>
