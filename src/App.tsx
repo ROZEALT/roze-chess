@@ -12,6 +12,7 @@ import Learn from "./pages/Learn";
 import Connect from "./pages/Connect";
 import Settings from "./pages/Settings";
 import Auth from "./pages/Auth";
+import Install from "./pages/Install";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/auth" element={<Auth />} />
+            <Route path="/install" element={<Install />} />
             <Route path="/" element={<Layout><Home /></Layout>} />
             <Route path="/play" element={<Layout><Play /></Layout>} />
             <Route path="/online" element={<Layout><Online /></Layout>} />
