@@ -60,15 +60,18 @@ export const ChessScene3D = ({ fen, playerColor, onMove, isGameOver, turn }: Che
             turn={turn}
           />
           
-          {/* Floor/table */}
+          {/* Floor/table - black background */}
           <mesh 
             rotation={[-Math.PI / 2, 0, 0]} 
             position={[0, -0.31, 0]} 
             receiveShadow
           >
-            <planeGeometry args={[30, 30]} />
-            <meshStandardMaterial color="#1a1a2e" />
+            <planeGeometry args={[50, 50]} />
+            <meshStandardMaterial color="#000000" />
           </mesh>
+          
+          {/* Black fog/background */}
+          <color attach="background" args={['#000000']} />
         </Suspense>
       </Canvas>
     </div>
