@@ -1,19 +1,19 @@
 import { useState } from 'react';
 import { Square } from 'chess.js';
-import { Link } from 'react-router-dom';
 import { useChessGame, Difficulty } from '@/hooks/useChessGame';
-import { ChessBoard } from '@/components/ChessBoard';
+import { ChessScene3D } from '@/components/3d/ChessScene3D';
 import { GameControls } from '@/components/GameControls';
 import { MoveHistory } from '@/components/MoveHistory';
 import { CapturedPieces } from '@/components/CapturedPieces';
 import { GameStatus } from '@/components/GameStatus';
-import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { Box } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
+import { ArrowLeft, RotateCcw } from 'lucide-react';
 
-const Play = () => {
+const Play3D = () => {
   const [difficulty, setDifficulty] = useState<Difficulty>('easy');
   const { gameState, playerColor, makeMove, resetGame, flipBoard, undoMove } = useChessGame(difficulty);
   const { toast } = useToast();
@@ -90,12 +90,16 @@ const Play = () => {
   return (
     <div className="container mx-auto px-4 py-6">
       <div className="mb-4 flex items-center gap-4">
-        <Link to="/play-3d">
+        <Link to="/play">
           <Button variant="outline" size="sm">
-            <Box className="h-4 w-4 mr-2" />
-            3D Board
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            2D Board
           </Button>
         </Link>
+        <h1 className="text-2xl font-bold">3D Chess</h1>
+        <div className="text-sm text-muted-foreground">
+          Drag to rotate • Scroll to zoom
+        </div>
       </div>
       
       <div className="grid lg:grid-cols-[1fr_350px] gap-6 max-w-6xl mx-auto">
@@ -111,15 +115,20 @@ const Play = () => {
           />
           
           <div className="flex justify-center">
-            <div className="w-full max-w-[600px]">
-              <ChessBoard
-                fen={gameState.fen}
-                playerColor={playerColor}
-                onPieceDrop={handlePieceDrop}
-                isGameOver={gameState.isGameOver}
-                turn={gameState.turn}
-              />
-            </div>
+            <ChessScene3D
+              fen={gameState.fen}
+              playerColor={playerColor}
+              onMove={handlePieceDrop}
+              isGameOver={gameState.isGameOver}
+              turn={gameState.turn}
+            />
+          </div>
+          
+          <div className="flex justify-center">
+            <Button variant="outline" onClick={flipBoard} size="sm">
+              <RotateCcw className="h-4 w-4 mr-2" />
+              Reset Camera View
+            </Button>
           </div>
         </div>
 
@@ -143,4 +152,4 @@ const Play = () => {
   );
 };
 
-export default Play;
+export default Play3D;
