@@ -32,11 +32,11 @@ export const ChessScene3D = ({ fen, playerColor, onMove, isGameOver, turn }: Che
             target={[0, 0, 0]}
           />
           
-          {/* Lighting */}
-          <ambientLight intensity={0.4} />
+          {/* Lighting - darker ambient with subtle directional */}
+          <ambientLight intensity={0.15} />
           <directionalLight
             position={[5, 10, 5]}
-            intensity={1}
+            intensity={0.6}
             castShadow
             shadow-mapSize={[2048, 2048]}
             shadow-camera-far={50}
@@ -45,7 +45,8 @@ export const ChessScene3D = ({ fen, playerColor, onMove, isGameOver, turn }: Che
             shadow-camera-top={10}
             shadow-camera-bottom={-10}
           />
-          <pointLight position={[-5, 8, -5]} intensity={0.5} />
+          <pointLight position={[-5, 8, -5]} intensity={0.2} color="#4a6fa5" />
+          <pointLight position={[0, 6, 0]} intensity={0.15} color="#ffffff" />
           
           {/* Environment for reflections */}
           <Environment preset="studio" />
