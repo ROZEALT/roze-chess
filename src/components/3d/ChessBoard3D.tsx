@@ -105,10 +105,10 @@ export const ChessBoard3D = ({ fen, playerColor, onMove, isGameOver, turn }: Che
 
   return (
     <group>
-      {/* Board base */}
+      {/* Board base - darker wood */}
       <mesh position={[0, -0.15, 0]} receiveShadow>
         <boxGeometry args={[9, 0.3, 9]} />
-        <meshStandardMaterial color="#5d4037" />
+        <meshStandardMaterial color="#3d2817" />
       </mesh>
       
       {/* Board squares */}
@@ -120,9 +120,10 @@ export const ChessBoard3D = ({ fen, playerColor, onMove, isGameOver, turn }: Che
           const isValidMove = validMoves.includes(square);
           const isSelected = selectedSquare === square;
           
-          let color = isLight ? '#eeeed2' : '#769656';
-          if (isSelected) color = '#f6f669';
-          else if (isValidMove) color = '#90EE90';
+          // More vibrant, less pale colors
+          let color = isLight ? '#e8d5b0' : '#4a7c4e';
+          if (isSelected) color = '#d4a824';
+          else if (isValidMove) color = '#6acd6a';
           
           return (
             <mesh
