@@ -332,7 +332,7 @@ export const useOnlineGame = () => {
     };
   }, [user, isSearching, updateGameState]);
 
-  // Subscribe to game updates
+  // Subscribe to game updates (including when opponent joins private room)
   useEffect(() => {
     if (!gameState?.id) return;
 
@@ -348,11 +348,14 @@ export const useOnlineGame = () => {
         },
         (payload) => {
           const game = payload.new as any;
+          console.log('Game update received:', game);
           chessRef.current = new Chess(game.fen);
           updateGameState(chessRef.current, game);
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log('Game subscription status:', status);
+      });
 
     return () => {
       supabase.removeChannel(channel);
