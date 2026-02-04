@@ -1,6 +1,15 @@
 import { useState, useMemo } from 'react';
 import { Chessboard } from 'react-chessboard';
 import { Chess, Square } from 'chess.js';
+import { useAuth } from '@/contexts/AuthContext';
+
+const boardThemes: Record<string, { light: string; dark: string }> = {
+  green: { light: '#eeeed2', dark: '#769656' },
+  brown: { light: '#f0d9b5', dark: '#b58863' },
+  blue: { light: '#dee3e6', dark: '#8ca2ad' },
+  purple: { light: '#e8e4f0', dark: '#8877b7' },
+  gray: { light: '#e0e0e0', dark: '#888888' },
+};
 
 interface ChessBoardProps {
   fen: string;
@@ -13,6 +22,12 @@ interface ChessBoardProps {
 export const ChessBoard = ({ fen, playerColor, onPieceDrop, isGameOver, turn }: ChessBoardProps) => {
   const [selectedSquare, setSelectedSquare] = useState<Square | null>(null);
   const [validMoves, setValidMoves] = useState<Square[]>([]);
+  const { settings } = useAuth();
+
+  // Get theme colors from settings
+  const theme = boardThemes[settings?.board_theme || 'green'] || boardThemes.green;
+  const showCoordinates = settings?.show_coordinates ?? true;
+  const highlightMoves = settings?.highlight_moves ?? true;
 
   // Create a temporary chess instance to calculate valid moves
   const chess = useMemo(() => new Chess(fen), [fen]);
@@ -66,7 +81,7 @@ export const ChessBoard = ({ fen, playerColor, onPieceDrop, isGameOver, turn }: 
   const customSquareStyles: Record<string, React.CSSProperties> = {};
 
   // Highlight selected square
-  if (selectedSquare) {
+  if (selectedSquare && highlightMoves) {
     customSquareStyles[selectedSquare] = {
       backgroundColor: 'rgba(255, 255, 0, 0.5)',
       boxShadow: 'inset 0 0 0 3px rgba(255, 200, 0, 0.8)',
@@ -74,20 +89,22 @@ export const ChessBoard = ({ fen, playerColor, onPieceDrop, isGameOver, turn }: 
   }
 
   // Highlight valid moves
-  validMoves.forEach((square) => {
-    const piece = chess.get(square);
-    if (piece) {
-      // Capture move - red highlight
-      customSquareStyles[square] = {
-        background: 'radial-gradient(circle, transparent 65%, rgba(255, 80, 80, 0.8) 65%)',
-      };
-    } else {
-      // Normal move - dot indicator
-      customSquareStyles[square] = {
-        background: 'radial-gradient(circle, rgba(129, 182, 76, 0.7) 25%, transparent 25%)',
-      };
-    }
-  });
+  if (highlightMoves) {
+    validMoves.forEach((square) => {
+      const piece = chess.get(square);
+      if (piece) {
+        // Capture move - red highlight
+        customSquareStyles[square] = {
+          background: 'radial-gradient(circle, transparent 65%, rgba(255, 80, 80, 0.8) 65%)',
+        };
+      } else {
+        // Normal move - dot indicator
+        customSquareStyles[square] = {
+          background: 'radial-gradient(circle, rgba(129, 182, 76, 0.7) 25%, transparent 25%)',
+        };
+      }
+    });
+  }
 
   return (
     <div className="chess-card p-3 sm:p-4 glow-effect">
@@ -105,12 +122,13 @@ export const ChessBoard = ({ fen, playerColor, onPieceDrop, isGameOver, turn }: 
           borderRadius: '8px',
           boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
         }}
-        customDarkSquareStyle={{ backgroundColor: '#769656' }}
-        customLightSquareStyle={{ backgroundColor: '#eeeed2' }}
+        customDarkSquareStyle={{ backgroundColor: theme.dark }}
+        customLightSquareStyle={{ backgroundColor: theme.light }}
         customSquareStyles={customSquareStyles}
         customDropSquareStyle={{
           boxShadow: 'inset 0 0 1px 6px rgba(129, 182, 76, 0.75)',
         }}
+        showBoardNotation={showCoordinates}
       />
     </div>
   );
