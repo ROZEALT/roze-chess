@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Crown, Mail, Lock, User } from 'lucide-react';
+import { Crown, Mail, Lock, User, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -12,6 +13,7 @@ const Auth = () => {
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(false);
+  const [validatingUsername, setValidatingUsername] = useState(false);
   
   const { signIn, signUp, user } = useAuth();
   const navigate = useNavigate();
@@ -20,6 +22,27 @@ const Auth = () => {
   useEffect(() => {
     if (user) navigate('/');
   }, [user, navigate]);
+
+  const validateUsername = async (name: string): Promise<{ valid: boolean; reason?: string }> => {
+    try {
+      const { data, error } = await supabase.functions.invoke('moderate-username', {
+        body: { username: name }
+      });
+      
+      if (error) {
+        console.error('Moderation error:', error);
+        return { valid: true }; // Allow if moderation fails
+      }
+      
+      return { 
+        valid: data.isAppropriate === true,
+        reason: data.reason
+      };
+    } catch (err) {
+      console.error('Failed to validate username:', err);
+      return { valid: true }; // Allow if request fails
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,6 +57,16 @@ const Auth = () => {
         if (!username.trim()) {
           throw new Error('Username is required');
         }
+        
+        // Validate username for inappropriate content
+        setValidatingUsername(true);
+        const validation = await validateUsername(username.trim());
+        setValidatingUsername(false);
+        
+        if (!validation.valid) {
+          throw new Error(validation.reason || 'This username is not allowed. Please choose a different one.');
+        }
+        
         const { error } = await signUp(email, password, username);
         if (error) throw error;
         toast({ title: 'Account created!', description: 'Welcome to Vault Chess.' });
@@ -47,6 +80,7 @@ const Auth = () => {
       });
     } finally {
       setLoading(false);
+      setValidatingUsername(false);
     }
   };
 
@@ -108,8 +142,19 @@ const Auth = () => {
               />
             </div>
 
-            <Button type="submit" variant="glow" className="w-full" disabled={loading}>
-              {loading ? 'Loading...' : isLogin ? 'Sign In' : 'Create Account'}
+            <Button type="submit" variant="glow" className="w-full" disabled={loading || validatingUsername}>
+              {validatingUsername ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Checking username...
+                </>
+              ) : loading ? (
+                'Loading...'
+              ) : isLogin ? (
+                'Sign In'
+              ) : (
+                'Create Account'
+              )}
             </Button>
           </form>
 
