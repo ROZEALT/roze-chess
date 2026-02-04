@@ -1,6 +1,15 @@
 import { useState, useMemo } from 'react';
 import { Chess, Square } from 'chess.js';
 import { ChessPiece3D } from './ChessPiece3D';
+import { useAuth } from '@/contexts/AuthContext';
+
+const boardThemes: Record<string, { light: string; dark: string }> = {
+  green: { light: '#e8d5b0', dark: '#4a7c4e' },
+  brown: { light: '#d4b896', dark: '#8b5a2b' },
+  blue: { light: '#c4d4dc', dark: '#5a7a8a' },
+  purple: { light: '#d8d0e0', dark: '#6a5a8a' },
+  gray: { light: '#c8c8c8', dark: '#606060' },
+};
 
 interface ChessBoard3DProps {
   fen: string;
@@ -16,6 +25,11 @@ const ranks = ['1', '2', '3', '4', '5', '6', '7', '8'];
 export const ChessBoard3D = ({ fen, playerColor, onMove, isGameOver, turn }: ChessBoard3DProps) => {
   const [selectedSquare, setSelectedSquare] = useState<Square | null>(null);
   const [validMoves, setValidMoves] = useState<Square[]>([]);
+  const { settings } = useAuth();
+  
+  // Get theme colors from settings
+  const theme = boardThemes[settings?.board_theme || 'green'] || boardThemes.green;
+  const highlightMoves = settings?.highlight_moves ?? true;
   
   const chess = useMemo(() => new Chess(fen), [fen]);
   
@@ -117,11 +131,11 @@ export const ChessBoard3D = ({ fen, playerColor, onMove, isGameOver, turn }: Che
           const square = `${file}${rank}` as Square;
           const isLight = (fileIndex + rankIndex) % 2 === 1;
           const pos = squareToPosition(square);
-          const isValidMove = validMoves.includes(square);
-          const isSelected = selectedSquare === square;
+          const isValidMove = highlightMoves && validMoves.includes(square);
+          const isSelected = highlightMoves && selectedSquare === square;
           
-          // More vibrant, less pale colors
-          let color = isLight ? '#e8d5b0' : '#4a7c4e';
+          // Use theme colors
+          let color = isLight ? theme.light : theme.dark;
           if (isSelected) color = '#d4a824';
           else if (isValidMove) color = '#6acd6a';
           
