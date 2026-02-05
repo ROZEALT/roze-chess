@@ -1,8 +1,11 @@
 import { ReactNode } from 'react';
+ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Crown, Home, Play, Globe, GraduationCap, Users, Settings, LogOut, User } from 'lucide-react';
+ import { Crown, Home, Play, Globe, GraduationCap, Users, Settings, LogOut, User, Sparkles, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
+ import { usePoints } from '@/hooks/usePoints';
+ import PremiumUpgradeDialog from './PremiumUpgradeDialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,6 +25,14 @@ const navItems = [
 export const Layout = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
   const { user, profile, signOut } = useAuth();
+   const { points, isPremium, checkDailyLogin } = usePoints();
+   const [showUpgrade, setShowUpgrade] = useState(false);
+ 
+   useEffect(() => {
+     if (user) {
+       checkDailyLogin();
+     }
+   }, [user, checkDailyLogin]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -57,12 +68,27 @@ export const Layout = ({ children }: { children: ReactNode }) => {
           <div className="flex items-center gap-3">
             {user ? (
               <>
-                <div className="chess-card px-3 py-1.5 hidden sm:flex items-center gap-2">
-                  <span className="text-xs text-muted-foreground">Rating</span>
-                  <span className="font-heading font-bold text-primary">
-                    {profile?.rating_rapid || 1200}
-                  </span>
-                </div>
+                 {isPremium ? (
+                   <div className="chess-card px-3 py-1.5 hidden sm:flex items-center gap-2 border-primary/50">
+                     <Crown className="w-4 h-4 text-primary" />
+                     <span className="text-xs font-medium text-primary">Chess+</span>
+                   </div>
+                 ) : (
+                   <button
+                     onClick={() => setShowUpgrade(true)}
+                     className="chess-card px-3 py-1.5 hidden sm:flex items-center gap-2 hover:border-primary/50 transition-colors"
+                   >
+                     <Sparkles className="w-4 h-4 text-muted-foreground" />
+                     <span className="text-xs text-muted-foreground">{points} pts</span>
+                   </button>
+                 )}
+                 
+                 <div className="chess-card px-3 py-1.5 hidden md:flex items-center gap-2">
+                   <Star className="w-4 h-4 text-muted-foreground" />
+                   <span className="font-heading font-bold text-foreground">
+                     {profile?.rating_rapid || 1200}
+                   </span>
+                 </div>
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -99,6 +125,8 @@ export const Layout = ({ children }: { children: ReactNode }) => {
             )}
           </div>
         </div>
+       
+       <PremiumUpgradeDialog open={showUpgrade} onOpenChange={setShowUpgrade} />
 
         {/* Mobile Navigation */}
         <nav className="md:hidden flex items-center justify-around py-2 border-t border-border">

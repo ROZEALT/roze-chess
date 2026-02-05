@@ -1,5 +1,7 @@
 import { useState } from 'react';
+ import { useRef, useEffect } from 'react';
 import { Square } from 'chess.js';
+ import { Link, useNavigate } from 'react-router-dom';
 import { useChessGame, Difficulty } from '@/hooks/useChessGame';
 import { ChessScene3D } from '@/components/3d/ChessScene3D';
 import { GameControls } from '@/components/GameControls';
@@ -8,16 +10,59 @@ import { CapturedPieces } from '@/components/CapturedPieces';
 import { GameStatus } from '@/components/GameStatus';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
+ import { usePoints } from '@/hooks/usePoints';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
-import { ArrowLeft, RotateCcw } from 'lucide-react';
+ import { ArrowLeft, RotateCcw, Lock, Crown } from 'lucide-react';
 
 const Play3D = () => {
   const [difficulty, setDifficulty] = useState<Difficulty>('easy');
   const { gameState, playerColor, makeMove, resetGame, flipBoard, undoMove } = useChessGame(difficulty);
   const { toast } = useToast();
   const { user } = useAuth();
+   const { isPremium, addPoints } = usePoints();
+   const navigate = useNavigate();
+   const lastMoveCount = useRef(0);
+ 
+   // Award points for making moves (every 5 moves)
+   useEffect(() => {
+     if (!isPremium) return; // Don't track if not premium
+     
+     const currentMoveCount = gameState.moveHistory.filter(m => 
+       (playerColor === 'w' && m.color === 'w') || 
+       (playerColor === 'b' && m.color === 'b')
+     ).length;
+     
+     if (currentMoveCount > lastMoveCount.current && currentMoveCount % 5 === 0 && user) {
+       addPoints('move_made');
+     }
+     lastMoveCount.current = currentMoveCount;
+   }, [gameState.moveHistory, playerColor, addPoints, user, isPremium]);
+ 
+   // Gate 3D mode for non-premium users
+   if (!isPremium) {
+     return (
+       <div className="container mx-auto px-4 py-16 flex flex-col items-center justify-center min-h-[60vh]">
+         <Lock className="w-16 h-16 text-muted-foreground mb-6" />
+         <h1 className="text-2xl font-bold mb-2">3D Chess is a Premium Feature</h1>
+         <p className="text-muted-foreground mb-6 text-center max-w-md">
+           Upgrade to Vault Chess+ to access immersive 3D chess, custom themes, and more!
+         </p>
+         <div className="flex gap-3">
+           <Link to="/play">
+             <Button variant="outline">
+               <ArrowLeft className="w-4 h-4 mr-2" />
+               Play 2D Instead
+             </Button>
+           </Link>
+           <Button variant="glow" onClick={() => navigate('/settings')}>
+             <Crown className="w-4 h-4 mr-2" />
+             Learn More
+           </Button>
+         </div>
+       </div>
+     );
+   }
 
   const handlePieceDrop = (source: Square, target: Square): boolean => {
     if (gameState.turn !== playerColor) return false;
@@ -52,6 +97,11 @@ const Play3D = () => {
       user_color: playerColor === 'w' ? 'white' : 'black',
       moves_count: gameState.moveHistory.length,
     });
+     
+     // Award points for winning
+     if (result === 'win') {
+       await addPoints('game_won');
+     }
   };
 
   const handleNewGame = () => {

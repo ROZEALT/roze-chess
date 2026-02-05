@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Users, MessageSquare, Trophy, UserPlus, Search, Check, X, Plus, LogOut } from 'lucide-react';
+ import { Users, MessageSquare, Trophy, UserPlus, Search, Check, X, Plus, LogOut, Lock, Crown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -7,8 +7,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConnect } from '@/hooks/useConnect';
+ import { usePoints } from '@/hooks/usePoints';
 import ChatWindow from '@/components/ChatWindow';
 import CreateClubDialog from '@/components/CreateClubDialog';
+ import PremiumUpgradeDialog from '@/components/PremiumUpgradeDialog';
 import { Link } from 'react-router-dom';
 
 interface SearchResult {
@@ -36,6 +38,7 @@ const Connect = () => {
     joinClub,
     leaveClub
   } = useConnect();
+   const { isPremium, addPoints } = usePoints();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
@@ -46,6 +49,12 @@ const Connect = () => {
     name: string;
   } | null>(null);
   const [createClubOpen, setCreateClubOpen] = useState(false);
+   const [showUpgrade, setShowUpgrade] = useState(false);
+ 
+   const handleAcceptFriendRequest = async (requestId: string) => {
+     await acceptFriendRequest(requestId);
+     await addPoints('friend_added');
+   };
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
@@ -205,7 +214,7 @@ const Connect = () => {
                         <Button 
                           size="sm" 
                           variant="default"
-                          onClick={() => acceptFriendRequest(request.id)}
+                           onClick={() => handleAcceptFriendRequest(request.id)}
                         >
                           <Check className="w-4 h-4" />
                         </Button>
@@ -298,7 +307,8 @@ const Connect = () => {
                   <Trophy className="w-5 h-5 text-primary" />
                   <h2 className="font-heading font-semibold text-lg text-foreground">My Clubs</h2>
                 </div>
-                <Button variant="game" size="sm" onClick={() => setCreateClubOpen(true)}>
+                 <Button variant="game" size="sm" onClick={() => isPremium ? setCreateClubOpen(true) : setShowUpgrade(true)}>
+                   {!isPremium && <Lock className="w-4 h-4 mr-1" />}
                   <Plus className="w-4 h-4 mr-1" />
                   Create Club
                 </Button>
@@ -460,11 +470,14 @@ const Connect = () => {
         </Tabs>
       </div>
 
-      <CreateClubDialog
-        open={createClubOpen}
-        onOpenChange={setCreateClubOpen}
-        onCreateClub={createClub}
-      />
+       {isPremium && (
+         <CreateClubDialog
+           open={createClubOpen}
+           onOpenChange={setCreateClubOpen}
+           onCreateClub={createClub}
+         />
+       )}
+       <PremiumUpgradeDialog open={showUpgrade} onOpenChange={setShowUpgrade} />
     </div>
   );
 };

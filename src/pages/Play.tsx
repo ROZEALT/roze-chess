@@ -1,4 +1,5 @@
 import { useState } from 'react';
+ import { useRef, useEffect, useCallback } from 'react';
 import { Square } from 'chess.js';
 import { Link } from 'react-router-dom';
 import { useChessGame, Difficulty } from '@/hooks/useChessGame';
@@ -10,6 +11,7 @@ import { GameStatus } from '@/components/GameStatus';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
+ import { usePoints } from '@/hooks/usePoints';
 import { supabase } from '@/integrations/supabase/client';
 import { Box } from 'lucide-react';
 
@@ -18,6 +20,21 @@ const Play = () => {
   const { gameState, playerColor, makeMove, resetGame, flipBoard, undoMove } = useChessGame(difficulty);
   const { toast } = useToast();
   const { user } = useAuth();
+   const { addPoints } = usePoints();
+   const lastMoveCount = useRef(0);
+ 
+   // Award points for making moves (every 5 moves)
+   useEffect(() => {
+     const currentMoveCount = gameState.moveHistory.filter(m => 
+       (playerColor === 'w' && m.color === 'w') || 
+       (playerColor === 'b' && m.color === 'b')
+     ).length;
+     
+     if (currentMoveCount > lastMoveCount.current && currentMoveCount % 5 === 0 && user) {
+       addPoints('move_made');
+     }
+     lastMoveCount.current = currentMoveCount;
+   }, [gameState.moveHistory, playerColor, addPoints, user]);
 
   const handlePieceDrop = (source: Square, target: Square): boolean => {
     if (gameState.turn !== playerColor) return false;
@@ -52,6 +69,11 @@ const Play = () => {
       user_color: playerColor === 'w' ? 'white' : 'black',
       moves_count: gameState.moveHistory.length,
     });
+     
+     // Award points for winning
+     if (result === 'win') {
+       await addPoints('game_won');
+     }
   };
 
   const handleNewGame = () => {
