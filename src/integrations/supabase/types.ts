@@ -114,6 +114,24 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_login_tracker: {
+        Row: {
+          id: string
+          last_login_date: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          last_login_date?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          last_login_date?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       direct_messages: {
         Row: {
           content: string
@@ -303,6 +321,30 @@ export type Database = {
         }
         Relationships: []
       }
+      points_history: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          reason: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          reason: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          reason?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -313,6 +355,7 @@ export type Database = {
           games_won: number | null
           id: string
           is_premium: boolean | null
+          points: number
           rating_blitz: number | null
           rating_bullet: number | null
           rating_daily: number | null
@@ -330,6 +373,7 @@ export type Database = {
           games_won?: number | null
           id?: string
           is_premium?: boolean | null
+          points?: number
           rating_blitz?: number | null
           rating_bullet?: number | null
           rating_daily?: number | null
@@ -347,6 +391,7 @@ export type Database = {
           games_won?: number | null
           id?: string
           is_premium?: boolean | null
+          points?: number
           rating_blitz?: number | null
           rating_bullet?: number | null
           rating_daily?: number | null

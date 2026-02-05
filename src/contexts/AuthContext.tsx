@@ -15,6 +15,7 @@ interface Profile {
   games_lost: number;
   games_drawn: number;
   is_premium: boolean;
+   points: number;
 }
 
 interface UserSettings {
